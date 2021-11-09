@@ -145,6 +145,7 @@ def run_sss_command(fname_in, options, fname_out, host='kasga', port=22,
     remote_out = op.join(work_dir, 'temp_%s_raw_sss.fif' % t0)
     remote_pos = op.join(work_dir, 'temp_%s_raw_sss.pos' % t0)
     print('%sOn %s: ' % (prefix, host), end='')
+    tempdir = None
     if isinstance(fname_in, str):
         fname_in = op.realpath(fname_in)  # in case it's a symlink
     elif fname_in is not None:
@@ -159,7 +160,8 @@ def run_sss_command(fname_in, options, fname_out, host='kasga', port=22,
         try:
             _push_remote(fname_in, host, port, remote_in)
         finally:
-            shutil.rmtree(tempdir)
+            if tempdir is not None:
+                shutil.rmtree(tempdir)
         in_out = '-f ' + remote_in + ' -o ' + remote_out + ' '
     else:
         in_out = ''
